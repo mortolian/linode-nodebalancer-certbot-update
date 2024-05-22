@@ -1,0 +1,4 @@
+Name: Gideon S.
+Email: gideon@mortolio.com
+Website: https://gideon.dev
+Github: https://github.com/mortolian/
