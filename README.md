@@ -2,19 +2,48 @@
 
 This is a small project meant to renew Linode's Nodebalancer SSL certificates with Let's Encrypt certificates when they are about to expire.
 
+## TODO
+1. Get a new certificate with a DNS-01 challenge on CloudFlare.
+2. Create a set up script for all the secrets. (Also have links or instructions of getting API keys.)
 
 ## CloudFlare Documentation
 
+Get a new API key from `https://dash.cloudflare.com/profile/api-tokens`. 
+Do not use the Global tokens, create a specific DNS token for greater security.
 
+```bash
+curl -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
+    -H "Authorization: Bearer {API_KEY}" \
+    -H "Content-Type:application/json"
+```
+Result
 
+```json
+{
+    "result":
+        {
+            "id":"55c5a110c40c76b9944618491c42119c",
+            "status":"active",
+            "not_before":"2024-05-22T00:00:00Z",
+            "expires_on":"2024-06-30T23:59:59Z"
+        },
+        "success":true,
+        "errors":[],
+        "messages":[
+            {
+                "code":10000,
+                "message":"This API Token is valid and active",
+                "type":null
+            }
+        ]
+}
+```
 
+## Docker - Run Manually
 
-1. Get a new certificate with a DNS-01 challenge on CloudFlare.
+Run Certbot commands mannually.
 
-
-2. Create a set up script for all the secrets. (Also have links or instructions of getting API keys.)
-
-```BASH
+```bash
 sudo docker run -it --rm --name certbot \
     -v "./.docker/certbot/etc/letsencrypt:/etc/letsencrypt" \
     -v "./.docker/certbot/var/lib/letsencrypt:/var/lib/letsencrypt" \
