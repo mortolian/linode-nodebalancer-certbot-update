@@ -1,3 +1,6 @@
 # Cloudflare API credentials used by Certbot
-dns_cloudflare_email = 
-dns_cloudflare_api_key = 
+# When you use the global API, you have to specify your email address as well.
+# When you use a specific API key, keep the email address commented.
+
+#dns_cloudflare_email = info@example.com
+#dns_cloudflare_api_key = 
