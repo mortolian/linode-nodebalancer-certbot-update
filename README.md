@@ -48,7 +48,6 @@ make setup
 A successful setup will have no errors and the below output.
 
 ```text
-TEST THE LETS ENCRYPT PROGRAM
 CLOUDFLARE SECRETS SETUP COMPLETE
 ```
 
