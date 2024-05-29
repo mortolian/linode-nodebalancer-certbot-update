@@ -9,6 +9,7 @@ LICENSE : GNU GPLv3
 """
 
 import argparse
+import sys
 import os
 import io
 from dotenv import load_dotenv
@@ -26,7 +27,7 @@ def new_certificate(
         domain: str,
         email: str,
         cloudflare_propagation_timeout: str,
-        dry_run: bool,
+        dry_run: str,
         execute_command: bool) -> None:
     """
     This will run the docker command to get a new certificate
@@ -51,7 +52,7 @@ def new_certificate(
               f'--agree-tos ' \
               f'--no-eff-email'
 
-    if dry_run:
+    if dry_run == 'yes':
         cmd_str = cmd_str + f' --dry-run '
 
     print(cmd_str, end='')
@@ -64,7 +65,7 @@ def renew_certificate(
         domain: str,
         email: str,
         cloudflare_propagation_timeout: str,
-        dry_run: bool,
+        dry_run: str,
         execute_command: bool) -> None:
     """
     This will renew the present certificate.
@@ -75,7 +76,14 @@ def renew_certificate(
     :param execute_command:
     :return:
     """
-    print("Get a new certificate")
+
+    new_certificate(
+        domain=domain,
+        email=email,
+        dry_run=dry_run,
+        cloudflare_propagation_timeout=cloudflare_propagation_timeout,
+        execute_command=execute_command
+    )
 
 
 def update_linode(
@@ -109,11 +117,11 @@ def update_linode(
         print(ssl_cert_content)
         cert_file.close()
 
-    cmd_str = 'docker run --rm --tty -e LINODE_CLI_TOKEN=' \
+    cmd_str = f'docker run --rm --tty -e LINODE_CLI_TOKEN=' \
               f'{api_token} ' \
               f'linode/cli:latest nodebalancers config-update ' \
               f'{node_balancer_id} {config_id} ' \
-              f'--ssl_cert="{ssl_cert_content}" --ssl_key="{ssl_key_content}"' \
+              f'--ssl_cert="{ssl_cert_content}" --ssl_key="{ssl_key_content}"'
 
     print(cmd_str, end='')
 
@@ -149,6 +157,8 @@ def cf_setup() -> None:
         dst_file.write(config_str)
         dst_file.close()
 
+    os.system(f'chmod 0600 {src_folder}cloudflare.ini')
+
     print("CLOUDFLARE SECRETS SETUP COMPLETE")
 
 
@@ -157,17 +167,17 @@ def main() -> argparse:
     parser.add_argument('-n', '--new-certificate',
                         action='store_true',
                         default=False,
-                        help='Gets a new certificate.')
+                        help='Generate CLI command to get a new certificate through a Docker container.')
 
     parser.add_argument('-r', '--renew-certificate',
                         action='store_true',
                         default=False,
-                        help='Renew a certificate.')
+                        help='Generate CLI command to renew a certificate through a Docker container.')
 
     parser.add_argument('-u', '--update-nodebalancer',
                         action='store_true',
                         default=False,
-                        help='Update Linode NodeBalancer.')
+                        help='Generate CLI command to update your Linode NodeBalancer through a Docker container.')
 
     parser.add_argument('-s', '--cf-setup',
                         action='store_true',
@@ -177,12 +187,13 @@ def main() -> argparse:
     parser.add_argument('-t', '--test-output',
                         action='store_true',
                         default=False,
-                        help='Update Linode NodeBalancer.')
+                        help='Generate CLI command to Update Linode NodeBalancer through a Docker container.')
 
     parser.add_argument('-x', '--execute-command',
                         action='store_true',
                         default=False,
-                        help='Update Linode NodeBalancer.')
+                        help='Execute the command instead of printing it out to the terminal. This is helpful'
+                             'when running the script directly on the host and not through a Docker container.')
 
     args = parser.parse_args()
 
@@ -194,7 +205,7 @@ def main() -> argparse:
         new_certificate(
             domain=os.getenv('CERTBOT_DOMAIN'),
             email=os.getenv('CERTBOT_EMAIL'),
-            dry_run=bool(os.getenv('CERTBOT_DRY_RUN')),
+            dry_run=os.getenv('CERTBOT_DRY_RUN'),
             cloudflare_propagation_timeout=os.getenv('CF_PROPAGATION_TIMEOUT'),
             execute_command=args.execute_command
         )
@@ -202,7 +213,7 @@ def main() -> argparse:
         renew_certificate(
             domain=os.getenv('CERTBOT_DOMAIN'),
             email=os.getenv('CERTBOT_EMAIL'),
-            dry_run=bool(os.getenv('CERTBOT_DRY_RUN')),
+            dry_run=os.getenv('CERTBOT_DRY_RUN'),
             cloudflare_propagation_timeout=os.getenv('CF_PROPAGATION_TIMEOUT'),
             execute_command=args.execute_command
         )
