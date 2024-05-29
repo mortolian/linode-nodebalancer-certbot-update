@@ -1,3 +1,4 @@
+.idea
 .env
 .docker/certbot/etc/
 .docker/certbot/var/
