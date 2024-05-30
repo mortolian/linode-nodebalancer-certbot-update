@@ -118,6 +118,7 @@ docker run -it --rm --name certbot \
 - https://hub.docker.com/_/python
 
 ### General Research
+- https://www.linode.com/docs/api/nodebalancers/#nodebalancers-list
 - https://www.linode.com/docs/api/nodebalancers/#config-update
 - https://eff-certbot.readthedocs.io/en/latest/install.html#running-with-docker
 - https://eff-certbot.readthedocs.io/en/latest/using.html#dns-plugins
