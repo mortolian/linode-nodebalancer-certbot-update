@@ -106,12 +106,10 @@ docker run -it --rm --name certbot \
 ```
 
 ## Todo
-1. Let the renewal of the docker cert hook the update of Linode.
-2. Package the python code with requirements.txt and adjust the container.
-3. Create a Discover feature to discover Linode NodeBalancers to include in the environment config.
-4. Create a set-up script for all the secrets. (Also have links or instructions of getting API keys.)
-5. Make sure the correct number of options can be used with the `main.py` CLI utility.
-6. Notification of some kind.
+- Let the renewal of the docker cert hook the update of Linode.
+- Create a Discover feature to discover Linode NodeBalancers to include in the environment config.
+- Make sure the correct number of options can be used with the `main.py` CLI utility. 
+- Notification of some kind. (https://www.datacamp.com/tutorial/how-to-send-slack-messages-with-python)
 
 ## References
 ### Docker HUB

@@ -15,14 +15,14 @@ setup: ## This will setup the project (Remember to configure your .env file firs
 	@docker build . --tag certbot-ssl
 	@docker run -it --rm -v .:/app -t certbot-ssl --cf-setup
 
-certbot-new: ## This will issue a new certificate or setup the Let's Encrypt environment with the current certificate.
+certbot-new: setup ## This will issue a new certificate or setup the Let's Encrypt environment with the current certificate.
 	@docker run -it --rm -v .:/app -t certbot-ssl --new-certificate | /bin/sh 2> /dev/null
 
-certbot-renew: ## This will attempt to renew the Let's Encrypt certificate.
+certbot-renew: setup ## This will attempt to renew the Let's Encrypt certificate.
 	@docker run -it --rm -v .:/app -t certbot-ssl --renew-certificate | /bin/sh 2> /dev/null
 
-linode-update: setup ## This updates the Linode NodeBalancer with the current available certificate.
-	@docker run -it --rm -v .:/app -t certbot-ssl --update-nodebalancer | /bin/sh 2> /dev/null
+linode-update: ## This updates the Linode NodeBalancer with the current available certificate.
+	@docker run -it --rm -v .:/app -t certbot-ssl --update-nodebalancer
 
 test-python-image: ## This will test the Python image by running the main.py test method.
 	@docker run -it --rm -v .:/app -t certbot-ssl -t
