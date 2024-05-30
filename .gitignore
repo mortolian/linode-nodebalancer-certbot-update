@@ -1,4 +1,5 @@
 .idea
 .env
-.docker/certbot/etc/
-.docker/certbot/var/
+.docker/certbot/etc/letsencrypt/*
+!.docker/certbot/etc/letsencrypt/renewal-hooks
+.docker/certbot/var/log/letsencrypt/*

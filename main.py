@@ -23,6 +23,15 @@ def test_docker() -> None:
     print("TEST THE LETS ENCRYPT PROGRAM")
 
 
+def validate_certificate(domain: str) -> None:
+    """
+    This will validate the installed SSL certificate on the configured domain.
+    :param domain:
+    :return:
+    """
+    print('VALIDATE SSL CERT')
+
+
 def linode_get_nodebalancer_configs(key: str, nodebalancer_id: int) -> None:
     """
     This will find all the NodeBalancer configs based on the NodeBalancer ID.
@@ -67,6 +76,14 @@ def linode_get_nodebalancers(key: str) -> None:
 
 
 def linode_nodebalancer_config_update(key: str, nodebalancer_id: str, config_id: str, domain: str) -> None:
+    """
+    This updates the Linode NodeBalancer as configured.
+    :param key:
+    :param nodebalancer_id:
+    :param config_id:
+    :param domain:
+    :return:
+    """
     src_folder = './.docker/certbot/etc/letsencrypt/live/' + domain + '/'
 
     # grab the required ssl key file content
@@ -117,6 +134,7 @@ def new_certificate(
 
     cmd_str = f'docker run --tty --rm --name certbot ' \
               f'--mount type=bind,source=$(pwd)/.docker/certbot/etc/letsencrypt,target=/etc/letsencrypt ' \
+              f'--mount type=bind,source=$(pwd)/.docker/certbot/var/log/letsencrypt,target=/var/log/letsencrypt ' \
               f'--mount type=bind,source=$(pwd)/.docker/certbot/.secrets,target=/root/.secrets/certbot,readonly ' \
               f'certbot/dns-cloudflare:latest certonly ' \
               f'--dns-cloudflare ' \
@@ -233,10 +251,17 @@ def main() -> argparse:
                         default=False,
                         help='Discover the Linode NodeBalancer infrastructure.')
 
+    parser.add_argument('-v', '--validate-ssl-cert',
+                        action='store_true',
+                        default=False,
+                        help='Validate the installed SSL certificate on the domain as configured.')
+
     args = parser.parse_args()
 
     if args.test_output:
         test_docker()
+    if args.validate_ssl_cert:
+        validate_certificate(domain=os.getenv('CERTBOT_DOMAIN'))
     if args.nodebalancer_discover:
         linode_get_nodebalancers(key=os.getenv("LINODE_TOKEN"))
     if args.cf_setup:
