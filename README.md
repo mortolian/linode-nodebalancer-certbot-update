@@ -130,7 +130,7 @@ renewed.
 
 ```bash
 #MIN HOUR DOM MON DOW CMD
-* 1 * * * cd {path} && make certbot-renew && make linode-update >> {path}/.logs/cron.log 2>&1
+* 1 * * *   cd {path} && make certbot-renew >> {path}/.logs/cron.log 2>&1 && make linode-update >> {path}/.logs/cron.log 2>&1
 ```
 
 This same method can be applied to other operating systems like MacOS (Automator) and Windows (Scheduled Tasks), but

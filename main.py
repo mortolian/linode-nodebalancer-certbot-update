@@ -46,7 +46,7 @@ def linode_get_nodebalancer_configs(key: str, nodebalancer_id: int) -> None:
     config_response = requests.request("GET",
                                        f'{linode_api_base_url}/nodebalancers/{nodebalancer_id}/configs/',
                                        headers=headers,
-                                       data={})
+                                       data={}, verify=True)
     config_data = config_response.json()
 
     for config in config_data["data"]:
@@ -66,7 +66,7 @@ def linode_get_nodebalancers(key: str) -> None:
     balancer_response = requests.request("GET",
                                          f'{linode_api_base_url}/nodebalancers',
                                          headers=headers,
-                                         data={})
+                                         data={}, verify=True)
 
     api_data = balancer_response.json()
 
@@ -125,7 +125,7 @@ def linode_nodebalancer_config_update(key: str, nodebalancer_id: str, config_id:
     balancer_response = requests.request("PUT",
                                          f'{linode_api_base_url}/nodebalancers/{nodebalancer_id}/configs/{config_id}',
                                          headers=headers,
-                                         data=data)
+                                         data=data, verify=True)
 
     if balancer_response.status_code == 200:
         with io.open(deploy_state_file, 'w') as state_file:
