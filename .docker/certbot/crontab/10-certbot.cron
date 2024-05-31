@@ -1,2 +1,0 @@
-# This is the cron job for automatically renewing domain certificates
-* * * * *   cd {pwd} && {pwd}/make renew 2> {pwd}/.docker/certbot/var/log/cron.log

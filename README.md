@@ -117,15 +117,13 @@ renewed.
 
 ```bash
 #MIN HOUR DOM MON DOW CMD
-* 1 * * * cd {path} && make certbot-renew && make linode-update 
+* 1 * * * cd {path} && make certbot-renew && make linode-update >> {path}/.logs/cron.log 2>&1
 ```
 
 This same method can be applied to other operating systems like MacOS (Automator) and Windows (Scheduled Tasks), but
 I will leave that for you to figure out.
 
 ## Todo
-- Let the renewal of the docker cert hook the update of Linode.
-- Create a Discover feature to discover Linode NodeBalancers to include in the environment config.
 - Make sure the correct number of options can be used with the `main.py` CLI utility. 
 - Notification of some kind. (https://www.datacamp.com/tutorial/how-to-send-slack-messages-with-python)
 
