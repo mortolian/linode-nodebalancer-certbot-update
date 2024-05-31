@@ -19,6 +19,7 @@ Set it up on your local machine or a Docker machine to automate the renewal proc
 - Docker version 25.0.3 (Tested with build 4debf41)
 - Docker Compose Version v2.24.6
 - Python 3.11.x (Tested with Python 3.11.5)
+- OS should be able to run Makefile
 
 ## Requirements for auto renewal via cron
 
@@ -55,7 +56,6 @@ A successful setup will have no errors and the below output.
 ```text
 CLOUDFLARE SECRETS SETUP COMPLETE
 ```
-
 
 For a full set of Makefile options, run `make help` or `make`.
 
@@ -97,18 +97,31 @@ python3 main.py --update-nodebalancer --execute-command
 
 ## Auto Renewals
 
-Set up a CRON for checking and renewing certificates.
+To automatically check if a certificate should be renewed, you will have to set up a 
+cron job.
+
+Start the crontab editor
 
 ```bash
-make --file /Users/{user}/certbot-renewals/{domain}/Makefile
+crontab -e
+crontab -u [username] -e
 ```
-Makefile Manual: https://www.gnu.org/software/make/manual/make.html
+
+Add the following line to it. Adjust the frequency of the checks to your preference.
+The time set below will check daily at 1am based on the time and timezone set for
+your host operating system.
+
+`{path}` Should be set to the root folder where this utility resides.
+`make linode-update` will only update the NodeBalancer if the certificate were
+renewed.
 
 ```bash
-docker run -it --rm --name certbot \
-    --mount type=bind,source=$(pwd)/.docker/certbot/etc/letsencrypt,target=/etc/letsencrypt \
-    certbot/dns-cloudflare renew --deploy-hook
+#MIN HOUR DOM MON DOW CMD
+* 1 * * * cd {path} && make certbot-renew && make linode-update 
 ```
+
+This same method can be applied to other operating systems like MacOS (Automator) and Windows (Scheduled Tasks), but
+I will leave that for you to figure out.
 
 ## Todo
 - Let the renewal of the docker cert hook the update of Linode.
@@ -123,6 +136,7 @@ docker run -it --rm --name certbot \
 - https://hub.docker.com/_/python
 
 ### General Research
+- Makefile Manual: https://www.gnu.org/software/make/manual/make.html
 - https://www.linode.com/docs/api/nodebalancers/#nodebalancers-list
 - https://www.linode.com/docs/api/nodebalancers/#config-update
 - https://eff-certbot.readthedocs.io/en/latest/install.html#running-with-docker
@@ -139,3 +153,9 @@ docker run -it --rm --name certbot \
 - https://gist.github.com/gdoumergue/b8bb2a3faa2d6079deda
 - https://api.slack.com/tutorials/tracks/posting-messages-with-curl
 - https://eff-certbot.readthedocs.io/en/latest/using.html#setting-up-automated-renewal
+
+### Windows Scheduled Tasks
+- https://learn.microsoft.com/en-us/previous-versions/orphan-topics/ws.10/cc772785(v=ws.10)?redirectedfrom=MSDN
+
+### MacOS Scheduled Tasks
+- https://www.launchd.info/
