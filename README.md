@@ -45,6 +45,19 @@ docker run --rm -it -e LINODE_CLI_TOKEN={TOKEN} linode/cli:latest nodebalancers 
 docker run --rm -it -e LINODE_CLI_TOKEN={TOKEN} linode/cli:latest nodebalancers configs-list {NODEBALANCER_ID}
 ```
 
+You can also run the Linode NodeBalancer discovery utility to make this process a little less painless.
+Remember that your Linode API token will need to be setup in the `.env` file.
+
+```bash
+python3 main.py -d, --nodebalancer-discover
+```
+
+There is also a Makefile version of this which you can run.
+
+```bash
+make nodebalancer-discover
+```
+
 Once the `.env` file is completed, run the initial setup command.
 
 ```bash
@@ -122,6 +135,43 @@ renewed.
 
 This same method can be applied to other operating systems like MacOS (Automator) and Windows (Scheduled Tasks), but
 I will leave that for you to figure out.
+
+
+## Python CLI Command Reference
+
+```text
+Let's Encrypt Management Tool
+
+options:
+  -h, --help            show this help message and exit
+  -n, --new-certificate
+                        Generate CLI command to get a new certificate through a Docker container.
+  -r, --renew-certificate
+                        Generate CLI command to renew a certificate through a Docker container.
+  -u, --update-nodebalancer
+                        Generate CLI command to update your Linode NodeBalancer through a Docker container.
+  -s, --cf-setup        CloudFlare Setup of Secrets File.
+  -t, --test-output     Generate CLI command to Update Linode NodeBalancer through a Docker container.
+  -x, --execute-command
+                        Execute the command instead of printing it out to the terminal. This is helpfulwhen running the script directly on the host and not through a Docker container.
+  -d, --nodebalancer-discover
+                        Discover the Linode NodeBalancer infrastructure.
+  -v, --validate-ssl-cert
+                        Validate the installed SSL certificate on the domain as configured.
+```
+
+## Makefile Command Reference
+
+```text
+ ———————————————— General Let's Encrypt Automations 🖖 ———————————————— 
+help                           Outputs this help screen.
+setup                          This will setup the project (Remember to configure your .env file first.)
+nodebalancer-discover          This will discover NodeBalancers on the Linode account the Linode API key was setup for.nodebalancer
+certbot-new                    This will issue a new certificate or setup the Let's Encrypt environment with the current certificate.
+certbot-renew                  This will attempt to renew the Let's Encrypt certificate.
+linode-update                  This updates the Linode NodeBalancer with the current available certificate.
+test-python-image              This will test the Python image by running the main.py test method.
+```
 
 ## Todo
 - Make sure the correct number of options can be used with the `main.py` CLI utility. 

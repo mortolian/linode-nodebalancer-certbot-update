@@ -15,6 +15,9 @@ setup: ## This will setup the project (Remember to configure your .env file firs
 	@docker build . --tag certbot-ssl
 	@docker run -it --rm -v .:/app -t certbot-ssl --cf-setup
 
+nodebalancer-discover: ## This will discover NodeBalancers on the Linode account the Linode API key was setup for.nodebalancer
+	@docker run -it --rm -v .:/app -t certbot-ssl --nodebalancer-discover
+
 certbot-new: setup ## This will issue a new certificate or setup the Let's Encrypt environment with the current certificate.
 	@docker run -it --rm -v .:/app -t certbot-ssl --new-certificate | /bin/sh 2> /dev/null
 
