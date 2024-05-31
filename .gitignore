@@ -3,3 +3,4 @@
 .docker/certbot/etc/letsencrypt/*
 !.docker/certbot/etc/letsencrypt/renewal-hooks
 .docker/certbot/var/log/letsencrypt/*
+.docker/certbot/var/log/cron.log

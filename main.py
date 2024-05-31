@@ -84,6 +84,21 @@ def linode_nodebalancer_config_update(key: str, nodebalancer_id: str, config_id:
     :param domain:
     :return:
     """
+
+    # Check to see if the deploy.state file exists. If it does, continue with the change, if it does not exit.
+
+    deploy_state_file = './.docker/certbot/etc/letsencrypt/renewal-hooks/deploy.state'
+
+    if not os.path.exists(deploy_state_file):
+        raise Exception('DEPLOY.STATE FILE DOES NOT EXIST')
+
+    with io.open(deploy_state_file, 'r') as state_file:
+        state = state_file.read().split('=')[1].replace('\n', '')
+
+    if state != 'true':
+        print('NO UPDATE AVAILABLE. STATE FILE IS NOT SET TO UPDATE (STATE != TRUE).')
+        exit(0)
+
     src_folder = './.docker/certbot/etc/letsencrypt/live/' + domain + '/'
 
     # grab the required ssl key file content
@@ -113,7 +128,9 @@ def linode_nodebalancer_config_update(key: str, nodebalancer_id: str, config_id:
                                          data=data)
 
     if balancer_response.status_code == 200:
-        print('SUCCESSFULLY UPDATED')
+        with io.open(deploy_state_file, 'w') as state_file:
+            state = state_file.write('deploy=false')
+        print('NODEBALANCER CONFIG SUCCESSFULLY UPDATED')
 
 
 def new_certificate(

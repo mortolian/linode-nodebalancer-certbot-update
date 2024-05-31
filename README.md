@@ -17,7 +17,12 @@ Set it up on your local machine or a Docker machine to automate the renewal proc
 ## Requirements
 
 - Docker version 25.0.3 (Tested with build 4debf41)
+- Docker Compose Version v2.24.6
 - Python 3.11.x (Tested with Python 3.11.5)
+
+## Requirements for auto renewal via cron
+
+- Linux or Unix machine with CRON installed.
 
 ## Set up
 
