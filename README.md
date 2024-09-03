@@ -136,7 +136,6 @@ renewed.
 This same method can be applied to other operating systems like MacOS (Automator) and Windows (Scheduled Tasks), but
 I will leave that for you to figure out.
 
-
 ## Python CLI Command Reference
 
 ```text
