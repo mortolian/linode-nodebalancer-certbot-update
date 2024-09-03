@@ -15,21 +15,13 @@ import requests
 from dotenv import load_dotenv
 
 
-def test_docker() -> None:
+def test_docker():
     """
-    This is a simple method to test that this script was reachable in the Python docker container.
+    This method is simply called to see if the Python file executes inside docker as it should.
     :return:
     """
-    print("TEST THE LETS ENCRYPT PROGRAM")
-
-
-def validate_certificate(domain: str) -> None:
-    """
-    This will validate the installed SSL certificate on the configured domain.
-    :param domain:
-    :return:
-    """
-    print('VALIDATE SSL CERT')
+    print(f'DOCKER WORKING WITH PYTHON')
+    exit(0)
 
 
 def linode_get_nodebalancer_configs(key: str, nodebalancer_id: int) -> None:
@@ -157,11 +149,12 @@ def new_certificate(
               f'--dns-cloudflare ' \
               f'--dns-cloudflare-credentials "/root/.secrets/certbot/cloudflare.ini" ' \
               f'--dns-cloudflare-propagation-seconds {cloudflare_propagation_timeout} ' \
-              f'-d {domain} ' \
+              f'{domain} ' \
               f'-m {email} ' \
               f'-n ' \
               f'--agree-tos ' \
-              f'--no-eff-email'
+              f'--no-eff-email ' \
+              f'--expand'
 
     if dry_run == 'yes':
         cmd_str = cmd_str + f' --dry-run '
@@ -268,17 +261,10 @@ def main() -> argparse:
                         default=False,
                         help='Discover the Linode NodeBalancer infrastructure.')
 
-    parser.add_argument('-v', '--validate-ssl-cert',
-                        action='store_true',
-                        default=False,
-                        help='Validate the installed SSL certificate on the domain as configured.')
-
     args = parser.parse_args()
 
     if args.test_output:
         test_docker()
-    if args.validate_ssl_cert:
-        validate_certificate(domain=os.getenv('CERTBOT_DOMAIN'))
     if args.nodebalancer_discover:
         linode_get_nodebalancers(key=os.getenv("LINODE_TOKEN"))
     if args.cf_setup:
