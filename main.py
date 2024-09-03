@@ -11,6 +11,7 @@ LICENSE : GNU GPLv3
 import argparse
 import os
 import io
+import glob
 import requests
 from dotenv import load_dotenv
 
@@ -87,11 +88,17 @@ def linode_nodebalancer_config_update(key: str, nodebalancer_id: str, config_id:
     with io.open(deploy_state_file, 'r') as state_file:
         state = state_file.read().split('=')[1].replace('\n', '')
 
-    if state != 'true':
-        print('NO UPDATE AVAILABLE. STATE FILE IS NOT SET TO UPDATE (STATE != TRUE).')
-        exit(0)
+    # if state != 'true':
+    #     print('NO UPDATE AVAILABLE. STATE FILE IS NOT SET TO UPDATE (STATE != TRUE).')
+    #     exit(0)
 
-    src_folder = './.docker/certbot/etc/letsencrypt/live/' + domain + '/'
+    # Check for the latest certificate
+    src_renew_folder = './.docker/certbot/etc/letsencrypt/renewal/*'
+
+    list_of_files = glob.glob(src_renew_folder)
+    latest_file = max(list_of_files, key=os.path.getctime)
+    latest_file = latest_file.replace('.conf', '').split('/')[-1:][0]
+    src_folder = './.docker/certbot/etc/letsencrypt/live/' + latest_file + '/'
 
     # grab the required ssl key file content
     with io.open(src_folder + 'privkey.pem', 'r') as key_file:
