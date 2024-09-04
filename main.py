@@ -300,14 +300,6 @@ def main() -> argparse:
             domain=os.getenv('CERTBOT_DOMAIN')
         )
 
-        # update_linode(
-        #     domain=os.getenv('CERTBOT_DOMAIN'),
-        #     api_token=os.getenv('LINODE_TOKEN'),
-        #     node_balancer_id=os.getenv('LINODE_NODEBALANCER_ID'),
-        #     config_id=os.getenv('LINODE_NODEBALANCER_CONFIG_ID'),
-        #     execute_command=args.execute_command
-        # )
-
     return args
 
 
